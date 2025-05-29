@@ -1,0 +1,32 @@
+# Lines configured by zsh-newuser-install
+HISTFILE=~/.histfile
+HISTSIZE=1000
+SAVEHIST=1000
+unsetopt beep
+bindkey -e
+# End of lines configured by zsh-newuser-install
+# The following lines were added by compinstall
+zstyle :compinstall filename '/home/nathan/.zshrc'
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
+if (( $+commands[apt-get] )); then
+  alias ins='sudo apt-get install'
+elif (( $+commands[zypper] )); then
+  alias ins='sudo zypper in'
+fi
+
+if (( $+commands[apt-get] )); then
+  alias dup='sudo apt-get update && sudo apt-get upgrade'
+elif (( $+commands[zypper] )); then
+  alias dup='sudo zypper dup'
+fi
+
+alias ls="eza --icons --group-directories-first"
+alias la="eza --icons --group-directories-first -a"
+alias ll="eza --icons --group-directories-first -lo"
+alias lla="eza --icons --group-directories-first -loa"
+alias cd..="cd .."
+alias ..="cd .."
+eval "$(starship init zsh)"
+alias minecraft="/game/MultiMC/MultiMC"

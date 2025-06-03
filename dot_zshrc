@@ -30,3 +30,4 @@ alias cd..="cd .."
 alias ..="cd .."
 eval "$(starship init zsh)"
 alias minecraft="/game/MultiMC/MultiMC"
+export EDITOR=nano

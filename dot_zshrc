@@ -29,5 +29,5 @@ alias lla="eza --icons --group-directories-first -loa"
 alias cd..="cd .."
 alias ..="cd .."
 eval "$(starship init zsh)"
-alias minecraft="/game/MultiMC/MultiMC"
+alias minecraft="/Game/Game/MultiMC/MultiMC"
 export EDITOR=nano

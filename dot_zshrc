@@ -8,6 +8,7 @@ bindkey -e
 # The following lines were added by compinstall
 zstyle :compinstall filename '/home/nathan/.zshrc'
 autoload -Uz compinit
+autoload -U add-zsh-hook
 compinit
 # End of lines added by compinstall
 if (( $+commands[apt-get] )); then
@@ -22,12 +23,51 @@ elif (( $+commands[zypper] )); then
   alias dup='sudo zypper dup'
 fi
 
-alias ls="eza --icons --group-directories-first"
-alias la="eza --icons --group-directories-first -a"
-alias ll="eza --icons --group-directories-first -lo"
-alias lla="eza --icons --group-directories-first -loa"
+alias ls="eza --color=always --icons --group-directories-first"
+alias la="eza --color=always --icons --group-directories-first -a"
+alias ll="eza --color=always --icons --group-directories-first -lo"
+alias lla="eza --color=always --icons --group-directories-first -loa"
 alias cd..="cd .."
 alias ..="cd .."
-eval "$(starship init zsh)"
+
 alias minecraft="/Game/Game/MultiMC/MultiMC"
-export EDITOR=nano
+export EDITOR=vim
+
+function osc7-pwd() {
+    emulate -L zsh # also sets localoptions for us
+    setopt extendedglob
+    local LC_ALL=C
+    printf '\e]7;file://%s%s\e\' $HOST ${PWD//(#m)([^@-Za-z&-;_~])/%${(l:2::0:)$(([##16]#MATCH))}}
+}
+
+function chpwd-osc7-pwd() {
+    (( ZSH_SUBSHELL )) || osc7-pwd
+}
+add-zsh-hook -Uz chpwd chpwd-osc7-pwd
+export LIBVIRT_DEFAULT_URI="qemu:///system"
+
+alias bible='winapps manual "C:\Program Files (x86)\OakTree\Accordance\Accordance.exe"'
+
+export BAT_THEME=tokyonight_night
+show_file_or_dir_preview="if [ -d {} ]; then eza --tree --color=always {} | head -200; else bat -n --color=always --line-range :500 {}; fi"
+
+export FZF_CTRL_T_OPTS="--preview '$show_file_or_dir_preview'"
+export FZF_ALT_C_OPTS="--preview 'eza --tree --color=always {} | head -200'"
+
+# Advanced customization of fzf options via _fzf_comprun function
+# - The first argument to the function is the name of the command.
+# - You should make sure to pass the rest of the arguments to fzf.
+_fzf_comprun() {
+  local command=$1
+  shift
+
+  case "$command" in
+    cd)           fzf --preview 'eza --tree --color=always {} | head -200' "$@" ;;
+    export|unset) fzf --preview "eval 'echo ${}'"         "$@" ;;
+    ssh)          fzf --preview 'dig {}'                   "$@" ;;
+    *)            fzf --preview "$show_file_or_dir_preview" "$@" ;;
+  esac
+}
+
+eval "$(fzf --zsh)"
+eval "$(starship init zsh)"
